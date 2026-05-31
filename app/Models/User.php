@@ -15,7 +15,7 @@ use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-#[Fillable(['name', 'email', 'password','email_verified_at'])]
+#[Fillable(['name', 'email', 'password','email_verified_at', 'is_default_password'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -27,10 +27,14 @@ class User extends Authenticatable implements MustVerifyEmail
         
     //protected $fillable = ['name1','name2'];
         
-    // public function model()
-    // {
-    //     return $this->belongsTo(modelM::class, 'idmodel', 'idmodel');
-    // }
+    public function akses()
+    {
+        return $this->hasOne(aksesM::class, 'iduser', 'iduser');
+    }
+    public function detailuser()
+    {
+        return $this->hasOne(detailuserM::class, 'iduser', 'iduser');
+    }
     /**
      * Get the attributes that should be cast.
      *

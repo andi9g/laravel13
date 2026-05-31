@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'BuatAkses' => App\Http\Middleware\GerbangAkses::class,
+            'superadmin' => App\Http\Middleware\GerbangSuperadmin::class,
+            'admin' => App\Http\Middleware\GerbangAdmin::class,
+            'PasswordDefault' => App\Http\Middleware\GerbangPasswordDefault::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

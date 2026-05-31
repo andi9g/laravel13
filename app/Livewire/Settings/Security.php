@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
+use Jantinnerezo\LivewireAlert\Facades\LivewireAlert;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Laravel\Passkeys\Actions\DeletePasskey;
@@ -96,22 +97,36 @@ class Security extends Component
     {
         try {
             $validated = $this->validate([
-                'current_password' => $this->currentPasswordRules(),
+                // 'current_password' => $this->currentPasswordRules(),
                 'password' => $this->passwordRules(),
+            ], [
+                // 'current_password.required' => 'Current password is required.',
+                // 'current_password.current_password' => 'The provided password does not match your current password.',
+                'password.required' => 'New password is required.',
+                'password.confirmed' => 'Password confirmation does not match.',
             ]);
         } catch (ValidationException $e) {
-            $this->reset('current_password', 'password', 'password_confirmation');
-
+            // $this->reset('password', 'password_confirmation');
             throw $e;
         }
 
+        $is_default_password = Auth::user()->is_default_password;
         Auth::user()->update([
             'password' => $validated['password'],
+            'is_default_password' => false,
         ]);
 
-        $this->reset('current_password', 'password', 'password_confirmation');
+        if($is_default_password == 1) {
+            session()->flash('success', 'Password telah diperbaruhi, selamat datang di aplikasi absensi digital!');
+            $this->redirectRoute('dashboard');
+        }else {
 
-        Flux::toast(variant: 'success', text: __('Password updated.'));
+            $this->reset('password', 'password_confirmation');
+    
+            LivewireAlert::title('Success')->text("Password updated successfully.")->success()->show();
+        }
+
+        
     }
 
     /**

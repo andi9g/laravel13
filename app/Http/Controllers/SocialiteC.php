@@ -32,6 +32,7 @@ class SocialiteC extends Controller
             'name' => $google->name,
             'password' => Hash::make(Str::random(32)),
             'email_verified_at' => now(),
+            'is_default_password' => true,
         ]);
     
         Auth::login($user);

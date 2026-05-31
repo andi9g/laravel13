@@ -31,8 +31,8 @@ return new class extends Migration
             $table->bigIncrements('idinstansi');
             $table->string('namainstansi', 100);
             $table->string('npsn', 100)->unique();
-            $table->string('kota', 100);
-            $table->string('alamat', 100);
+            $table->string('kota', 100)->nullable();
+            $table->string('alamat', 100)->nullable();
             $table->string('logo')->nullable();
             $table->timestamps();
         });
